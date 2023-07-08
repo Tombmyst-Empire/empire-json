@@ -6,12 +6,25 @@ import pathlib
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import sys
+import platform
+import os
 
 project = 'empire-json'
 copyright = 'Y\'en a pas de copyrite, Yann Tremblay'
 author = 'Yann Tremblay'
 release = '1.0'
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.joinpath('src').resolve()))
+
+root: str = str(pathlib.Path(__file__).parent.parent)
+
+if platform.system().lower() == 'windows':
+    sys.path.insert(0, os.path.join(root, 'winvenv', 'Lib', 'site-packages'))
+else:
+    for candidate in ['venv', 'uxvenv']:
+        if os.path.isdir(candidate):
+            sys.path.insert(0, os.path.join(root, candidate, 'lib', 'site-packages'))
+            break
+
+sys.path.insert(0, os.path.join(root, 'src'))
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -36,3 +49,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.pytest_cache']
 
 html_theme = 'alabaster'
 html_static_path = ['_static']
+
+autodoc_type_aliases = {
+    'JsonType': 'empire_commons.types_.JsonType',
+    'JsonList': 'empire_commons.types_.JsonList'
+}
