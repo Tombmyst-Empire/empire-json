@@ -22,17 +22,19 @@ numpy and uuid, including the builtin JSON module supported types.
 https://github.com/ijl/orjson
 """
 from __future__ import annotations
-# TODO: check for packaging, requires rust: https://github.com/ijl/orjson#packaging
 
-
-from collections import deque, defaultdict
-from typing import Any, OrderedDict, Callable, Optional
+from collections import defaultdict, deque
+from typing import Any, Callable, Optional, OrderedDict
 
 import orjson as json
 from bidict import bidict
+from empire_commons.types_ import NULL, JsonType
 from frozendict import frozendict
 
-from empire_commons.types_ import NULL, JsonType
+# TODO: check for packaging, requires rust: https://github.com/ijl/orjson#packaging
+
+
+__all__ = ["json", "default_encoder", "dumps", "loads"]
 
 
 def default_encoder(obj: Any) -> JsonType:
@@ -47,38 +49,51 @@ def default_encoder(obj: Any) -> JsonType:
 
 
 def dumps(
-        obj: JsonType,
-        *,
-        default: Optional[Callable[[Any], Any]] = default_encoder,
-        allow_non_string_keys: bool = False,
-        append_new_line: bool = False,
-        auto_serialize_dataclasses: bool = True,
-        auto_serialize_datetime: bool = True,
-        auto_serialize_subclasses_of_builtins: bool = True,
-        pretty_print_2_spaces: bool = False,
-        serialize_datetime_without_microseconds: bool = False,
-        serialize_datetime_without_tzinfo: bool = False,
-        serialize_numpy: bool = False,
-        sort_keys: bool = False,
-        strict_integers: bool = False,
-        use_z_for_timezone: bool = False,
-        **kwargs
+    obj: JsonType,
+    *,
+    default: Optional[Callable[[Any], Any]] = default_encoder,
+    allow_non_string_keys: bool = False,
+    append_new_line: bool = False,
+    auto_serialize_dataclasses: bool = True,
+    auto_serialize_datetime: bool = True,
+    auto_serialize_subclasses_of_builtins: bool = True,
+    pretty_print_2_spaces: bool = False,
+    serialize_datetime_without_microseconds: bool = False,
+    serialize_datetime_without_tzinfo: bool = False,
+    serialize_numpy: bool = False,
+    sort_keys: bool = False,
+    strict_integers: bool = False,
+    use_z_for_timezone: bool = False,
+    **kwargs,
 ) -> str:
     """
     Encode given Python obj instance into a JSON string.
     :param obj: the value to be serialized
-    :param default: To serialize a subclass or arbitrary types, specify default as a callable that returns a supported type. default may be a function, lambda, or callable class instance. To specify that a type was not handled by default, raise an exception such as TypeError.
-    :param allow_non_string_keys: (2x SLOWER when enabled) Serialize dict keys of type other than str. This allows dict keys to be one of str, int, float, bool, None, datetime.datetime, datetime.date, datetime.time, enum.Enum, and uuid.UUID. For comparison, the standard library serializes str, int, float, bool or None by default. orjson benchmarks as being faster at serializing non-str keys than other libraries. This option is slower for str keys than the default.
-    :param append_new_line: Append \n to the output. This is a convenience and optimization for the pattern of dumps(...) + "\n". bytes objects are immutable and this pattern copies the original contents.
-    :param auto_serialize_dataclasses: When disabled, passthrough dataclasses.dataclass instances to default. This allows customizing their output but is much slower.
-    :param auto_serialize_datetime: When disabled, passthrough datetime.datetime, datetime.date, and datetime.time instances to default. This allows serializing datetimes to a custom format, e.g., HTTP dates:
-    :param auto_serialize_subclasses_of_builtins: When disabled, passthrough subclasses of builtin types to default. This does not affect serializing subclasses as dict keys if using OPT_NON_STR_KEYS.
-    :param pretty_print_2_spaces: (0.25x SLOWER when enabled) Pretty-print output with an indent of two spaces. This is equivalent to indent=2 in the standard library. Pretty printing is slower and the output larger. orjson is the fastest compared library at pretty printing and has much less of a slowdown to pretty print than the standard library does. This option is compatible with all other options.
+    :param default: To serialize a subclass or arbitrary types, specify default as a callable that returns a supported type. default may be a
+    function, lambda, or callable class instance. To specify that a type was not handled by default, raise an exception such as TypeError.
+    :param allow_non_string_keys: (2x SLOWER when enabled) Serialize dict keys of type other than str. This allows dict keys to be one of str, int,
+    float, bool, None, datetime.datetime, datetime.date, datetime.time, enum.Enum, and uuid.UUID. For comparison, the standard library serializes str,
+    int, float, bool or None by default. orjson benchmarks as being faster at serializing non-str keys than other libraries. This option is slower for
+    str keys than the default.
+    :param append_new_line: Append \n to the output. This is a convenience and optimization for the pattern of dumps(...) + "\n". bytes objects are
+    immutable and this pattern copies the original contents.
+    :param auto_serialize_dataclasses: When disabled, passthrough dataclasses.dataclass instances to default. This allows customizing their output but
+    is much slower.
+    :param auto_serialize_datetime: When disabled, passthrough datetime.datetime, datetime.date, and datetime.time instances to default. This allows
+    serializing datetimes to a custom format, e.g., HTTP dates:
+    :param auto_serialize_subclasses_of_builtins: When disabled, passthrough subclasses of builtin types to default. This does not affect serializing
+    subclasses as dict keys if using OPT_NON_STR_KEYS.
+    :param pretty_print_2_spaces: (0.25x SLOWER when enabled) Pretty-print output with an indent of two spaces. This is equivalent to indent=2 in the
+    standard library. Pretty printing is slower and the output larger. orjson is the fastest compared library at pretty printing and has much less of
+    a slowdown to pretty print than the standard library does. This option is compatible with all other options.
     :param serialize_datetime_without_microseconds: Do not serialize the microsecond field on datetime.datetime and datetime.time instances.
-    :param serialize_datetime_without_tzinfo: Serialize datetime.datetime objects without a tzinfo as UTC. This has no effect on datetime.datetime objects that have tzinfo set.
+    :param serialize_datetime_without_tzinfo: Serialize datetime.datetime objects without a tzinfo as UTC. This has no effect on datetime.datetime
+    objects that have tzinfo set.
     :param serialize_numpy: Serialize numpy.ndarray instances. For more, see `https://github.com/ijl/orjson#numpy`.
-    :param sort_keys: (59% 5SLOWER when enabled) Serialize dict keys in sorted order. The default is to serialize in an unspecified order. This is equivalent to sort_keys=True in the standard library.
-    :param strict_integers: Enforce 53-bit limit on integers. The limit is otherwise 64 bits, the same as the Python standard library. For more, see `https://github.com/ijl/orjson#int`.
+    :param sort_keys: (59% 5SLOWER when enabled) Serialize dict keys in sorted order. The default is to serialize in an unspecified order. This is
+    equivalent to sort_keys=True in the standard library.
+    :param strict_integers: Enforce 53-bit limit on integers. The limit is otherwise 64 bits, the same as the Python standard library. For more, see
+    `https://github.com/ijl/orjson#int`.
     :param use_z_for_timezone: Serialize a UTC timezone on datetime.datetime instances as Z instead of +00:00.
     :return: A python str instance
     """
@@ -125,9 +140,7 @@ def dumps(
 
 
 def loads(
-        data: bytes | bytearray | memoryview | str,
-        error_handler_: Callable[[str, json.JSONDecodeError], JsonType] | None = None,
-        **kwargs
+    data: bytes | bytearray | memoryview | str, error_handler_: Callable[[str, json.JSONDecodeError], JsonType] | None = None, **kwargs
 ) -> JsonType:
     """
     loads() deserializes JSON to Python objects. It deserializes to dict, list, int, float, str, bool, and None objects.
@@ -154,4 +167,3 @@ def loads(
         if error_handler_ is not None:
             return error_handler_(data, e)
         raise
-

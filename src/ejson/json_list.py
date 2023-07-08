@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from empire_commons.types_ import JsonType, JsonList
+from empire_commons.types_ import JsonList, JsonType
 
 
 class JSONList:
     """
     Utilities for list of JSONs (or dictionaries)
     """
+
     @staticmethod
     def map_by_field(
-            field_name: str,
-            json_list: JsonList,
-            ignore_when_field_is_missing: bool = False,
-            remove_field_from_mapped_json: bool = False
+        field_name: str, json_list: JsonList, ignore_when_field_is_missing: bool = False, remove_field_from_mapped_json: bool = False
     ) -> JsonType:
         """
         From the provided *json_list*, this method creates a JSON object that refers every
@@ -38,9 +36,3 @@ class JSONList:
                     raise
 
         return result
-
-
-if __name__ == '__main__':
-    from ejson.error_handler.json_error_handler import error_handler
-
-    print('patate')

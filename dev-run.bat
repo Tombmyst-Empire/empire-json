@@ -1,8 +1,8 @@
 @echo off
 echo "Formatting using black"
-black -t 10 -q src
+black -t py310 .
 echo "Formating using isort"
-isort -q src
+isort src
 echo "################################### PYLINT ########################"
 pylint src
 echo "################################### PYTEST ########################"

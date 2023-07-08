@@ -1,6 +1,7 @@
 from __future__ import annotations
+
 import logging
-from collections import deque, defaultdict
+from collections import defaultdict, deque
 from datetime import datetime
 from typing import Any, Callable, Optional, OrderedDict
 
@@ -43,7 +44,7 @@ def dumps(
     iterable_mode: Optional[int] = json.IM_ANY_ITERABLE,
     mapping_mode: Optional[int] = json.MM_ANY_MAPPING,
     allow_nan: bool = True,
-    **kwargs
+    **kwargs,
 ) -> str:
     """
     Encode given Python obj instance into a JSON string.
@@ -92,7 +93,7 @@ def loads(
     parse_mode: int = None,
     allow_nan: bool = True,
     error_handler_: Optional[Callable[[str, json.JSONDecodeError], JsonType]] = None,
-    **kwargs
+    **kwargs,
 ) -> JsonType:
     """
     Decode the given JSON formatted value into Python object.

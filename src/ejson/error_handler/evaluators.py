@@ -1,8 +1,6 @@
-from ejson.error_handler.regexes import (
-    NON_DOUBLE_QUOTED_KEY_REGEX,
-    NON_ESCAPED_DOUBLE_QUOTE,
-    SINGLE_QUOTED_VALUE_REGEX,
-)
+from ejson.error_handler.regexes import (NON_DOUBLE_QUOTED_KEY_REGEX,
+                                         NON_ESCAPED_DOUBLE_QUOTE,
+                                         SINGLE_QUOTED_VALUE_REGEX)
 
 
 def there_are_keys_non_double_quoted(to_decode: str) -> bool:
