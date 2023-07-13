@@ -5,7 +5,7 @@ from contextlib import ExitStack
 from typing import Any, BinaryIO, Callable, Generator, TextIO
 
 from empire_commons.on_error import OnError, handle_error
-from empire_commons.types_ import JsonList, JsonType
+from empire_commons.types_ import JsonListType, JsonType
 from openpyxl.reader.excel import load_workbook
 
 from ejson.facades.orjson_ import dumps, json, loads
@@ -18,7 +18,7 @@ class JSON_IO:
 
     @staticmethod
     def write_ndjson_to_file(
-        _file: str, json_list: JsonList, *, compact: bool = True, on_error_behavior: OnError = OnError.LOG, should_append: bool = False, **kwargs
+        _file: str, json_list: JsonListType, *, compact: bool = True, on_error_behavior: OnError = OnError.LOG, should_append: bool = False, **kwargs
     ) -> bool:
         """
         Write *json_list* to *file_*
@@ -35,7 +35,7 @@ class JSON_IO:
 
     @staticmethod
     def write_ndjson_to_opened_file(
-        _file: TextIO | BinaryIO, json_list: JsonList, *, compact: bool = True, on_error_behavior: OnError = OnError.LOG, **kwargs
+        _file: TextIO | BinaryIO, json_list: JsonListType, *, compact: bool = True, on_error_behavior: OnError = OnError.LOG, **kwargs
     ) -> bool:
         """
         Write *json_list* to already opened *file_*
@@ -75,7 +75,7 @@ class JSON_IO:
 
     @staticmethod
     def write_json_or_ndjson_to_file(
-        _file: str, data: JsonType | JsonList, *, compact: bool = True, on_error_behavior: OnError = OnError.LOG, **kwargs
+        _file: str, data: JsonType | JsonListType, *, compact: bool = True, on_error_behavior: OnError = OnError.LOG, **kwargs
     ) -> bool:
         """
         Write *data* to file. If data is a *JsonList*, it will be written as ND-JSON, otherwise it will
@@ -117,7 +117,7 @@ class JSON_IO:
     @staticmethod
     def read_ndjson_from_file(
         _file: str, error_handler: Callable[[str, json.JSONDecodeError], JsonType] | None = None, on_error_behavior: OnError = OnError.LOG
-    ) -> JsonList:
+    ) -> JsonListType:
         """
         Reads ND-JSON from *file*
         :param _file: The file
@@ -127,7 +127,7 @@ class JSON_IO:
         :param on_error_behavior: Behavior this function should have on error
         :return: The read and parsed *JsonList* on success, None otherwise
         """
-        ndjson: JsonList = []
+        ndjson: JsonListType = []
         with open(_file, encoding="utf8") as f:
             for index, l in enumerate(f):
                 try:
@@ -150,7 +150,7 @@ class JSON_IO:
             return None
 
     @staticmethod
-    def yield_json_list_from_file(_file: str, batch_size: int, on_error_behavior: OnError = OnError.LOG) -> Generator[JsonList, Any, None]:
+    def yield_json_list_from_file(_file: str, batch_size: int, on_error_behavior: OnError = OnError.LOG) -> Generator[JsonListType, Any, None]:
         """
         A generator yielding *JsonList* objects from ND-JSON *file_*.
 
@@ -181,7 +181,7 @@ class JSON_IO:
                 yield chunk
 
     @staticmethod
-    def yield_json_list_from_csv(_file: str, batch_size: int) -> Generator[JsonList, Any, None]:
+    def yield_json_list_from_csv(_file: str, batch_size: int) -> Generator[JsonListType, Any, None]:
         """
         A generator yielding *JsonList* objects from CSV *file_*.
 
@@ -221,7 +221,7 @@ class JSON_IO:
         return cell_value
 
     @staticmethod
-    def yield_json_list_from_excel(_file: str, batch_size: int) -> Generator[JsonList, Any, None]:
+    def yield_json_list_from_excel(_file: str, batch_size: int) -> Generator[JsonListType, Any, None]:
         """
         A generator yielding *JsonList* objects from an Excel *file_*.
 

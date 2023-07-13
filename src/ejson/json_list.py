@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from empire_commons.types_ import JsonList, JsonType
+from empire_commons.types_ import JsonListType, JsonType
 
 
 class JSONList:
@@ -10,7 +10,7 @@ class JSONList:
 
     @staticmethod
     def map_by_field(
-        field_name: str, json_list: JsonList, ignore_when_field_is_missing: bool = False, remove_field_from_mapped_json: bool = False
+        field_name: str, json_list: JsonListType, ignore_when_field_is_missing: bool = False, remove_field_from_mapped_json: bool = False
     ) -> JsonType:
         """
         From the provided *json_list*, this method creates a JSON object that refers every
